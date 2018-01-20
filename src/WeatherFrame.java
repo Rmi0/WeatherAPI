@@ -1,3 +1,5 @@
+import sun.awt.SunHints;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -5,35 +7,43 @@ import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
 import java.util.Random;
 
 public class WeatherFrame extends JFrame {
 
     private Point mouse;
 
+    private JLabel temperatureLabel;
+    private JLabel statusLabel;
+    private JLabel windSpeedValLabel;
+    private JLabel humidityValLabel;
+
     public WeatherFrame() throws Exception {
-        this.setTitle("WeatherAPI");
+        this.setTitle("Weather");
         this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         this.setUndecorated(true);
 
         Font font = Font.createFont(Font.TRUETYPE_FONT, WeatherFrame.class.getResourceAsStream("segoeuil.ttf"));
 
-        int width = 720, height = 720;
         this.setContentPane(new JLabel(new ImageIcon(ImageIO.read(WeatherFrame.class.getResourceAsStream("bg.png")))));
-        this.getContentPane().setMinimumSize(new Dimension(width, height));
-        this.getContentPane().setMaximumSize(new Dimension(width, height));
-        this.getContentPane().setPreferredSize(new Dimension(width, height));
+        this.getContentPane().setMinimumSize(new Dimension(720, 720));
+        this.getContentPane().setMaximumSize(new Dimension(720, 720));
+        this.getContentPane().setPreferredSize(new Dimension(720, 720));
         this.setResizable(false);
         this.pack();
         this.setLocationRelativeTo(null);
 
-        JLabel topLabel = new JLabel(new ImageIcon(ImageIO.read(WeatherFrame.class.getResourceAsStream("top.png"))));
+        BufferedImage top = ImageIO.read(WeatherFrame.class.getResourceAsStream("top.png"));
+        Graphics2D topg2d = (Graphics2D) top.getGraphics();
+        topg2d.setRenderingHint(SunHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+        topg2d.setColor(Color.WHITE);
+        topg2d.setFont(font.deriveFont(22f));
+        topg2d.drawString(this.getTitle(), 50, 28);
+
+        JLabel topLabel = new JLabel(new ImageIcon(top));
         topLabel.setSize(720,40);
         topLabel.setLocation(0,0);
-        topLabel.setOpaque(true);
-        topLabel.setBackground(new Color(50,50,70,255));
-        topLabel.setForeground(Color.WHITE);
-        topLabel.setFont(font.deriveFont(20f));
         this.mouse = null;
         topLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -65,8 +75,21 @@ public class WeatherFrame extends JFrame {
         exitButton.setBorder(null);
         exitButton.setBorderPainted(false);
         exitButton.setContentAreaFilled(false);
-        exitButton.addActionListener(e -> {
-            System.exit(0);
+        exitButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                System.exit(0);
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                exitButton.setForeground(Color.CYAN);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                exitButton.setForeground(Color.WHITE);
+            }
         });
         topLabel.add(exitButton);
 
@@ -86,6 +109,8 @@ public class WeatherFrame extends JFrame {
         cityField.setBorder(new MatteBorder(0,0,1,0,Color.WHITE));
         cityField.setFont(font.deriveFont(20f));
         cityField.setCaretColor(Color.WHITE);
+        cityField.setSelectionColor(new Color(0,100,195));
+        cityField.setSelectedTextColor(Color.WHITE);
         this.getContentPane().add(cityField);
 
         JLabel countryLabel = new JLabel("Country code:");
@@ -104,11 +129,13 @@ public class WeatherFrame extends JFrame {
         countryField.setBorder(new MatteBorder(0,0,1,0,Color.WHITE));
         countryField.setFont(font.deriveFont(20f));
         countryField.setCaretColor(Color.WHITE);
+        countryField.setSelectionColor(new Color(0,100,195));
+        countryField.setSelectedTextColor(Color.WHITE);
         this.getContentPane().add(countryField);
 
         JButton sendButton = new JButton("Search");
         sendButton.setSize(150,40);
-        sendButton.setLocation(295,140);
+        sendButton.setLocation(285,140);
         sendButton.setOpaque(false);
         sendButton.setForeground(Color.WHITE);
         sendButton.setBorder(new MatteBorder(0,0,1,0,Color.WHITE));
@@ -127,9 +154,9 @@ public class WeatherFrame extends JFrame {
         cityNameLabel.setVerticalAlignment(SwingConstants.CENTER);
         this.getContentPane().add(cityNameLabel);
 
-        JLabel temperatureLabel = new JLabel("---°C");
+        this.temperatureLabel = new JLabel("---°C");
         temperatureLabel.setSize(150,60);
-        temperatureLabel.setLocation(295,280);
+        temperatureLabel.setLocation(285,280);
         temperatureLabel.setOpaque(false);
         temperatureLabel.setForeground(Color.WHITE);
         temperatureLabel.setFont(font.deriveFont(48f));
@@ -150,20 +177,79 @@ public class WeatherFrame extends JFrame {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                temperatureLabel.setText(""+new Random().nextInt(30)+"°C");
+                temperatureLabel.setText(new Random().nextInt(30)+"°C");
                 cityNameLabel.setText(cityField.getText()+", "+countryField.getText());
             }
         });
 
-        JLabel statusLabel = new JLabel("Snow");
+        this.statusLabel = new JLabel("---");
         statusLabel.setSize(150,30);
-        statusLabel.setLocation(295,350);
+        statusLabel.setLocation(285,350);
         statusLabel.setOpaque(false);
         statusLabel.setForeground(Color.WHITE);
         statusLabel.setFont(font.deriveFont(25f));
         statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
         statusLabel.setVerticalAlignment(SwingConstants.CENTER);
         this.getContentPane().add(statusLabel);
+
+        //DETAILS
+
+        JLabel windSpeedTopLabel = new JLabel("Wind speed");
+        windSpeedTopLabel.setSize(340,30);
+        windSpeedTopLabel.setLocation(10,420);
+        windSpeedTopLabel.setOpaque(false);
+        windSpeedTopLabel.setForeground(Color.WHITE);
+        windSpeedTopLabel.setFont(font.deriveFont(Font.BOLD, 25f));
+        windSpeedTopLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        windSpeedTopLabel.setVerticalAlignment(SwingConstants.CENTER);
+        this.getContentPane().add(windSpeedTopLabel);
+
+        this.windSpeedValLabel = new JLabel("---");
+        windSpeedValLabel.setSize(340,30);
+        windSpeedValLabel.setLocation(10,450);
+        windSpeedValLabel.setOpaque(false);
+        windSpeedValLabel.setForeground(Color.WHITE);
+        windSpeedValLabel.setFont(font.deriveFont(25f));
+        windSpeedValLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        windSpeedValLabel.setVerticalAlignment(SwingConstants.CENTER);
+        this.getContentPane().add(windSpeedValLabel);
+
+        JLabel humidityTopLabel = new JLabel("Humidity");
+        humidityTopLabel.setSize(340,30);
+        humidityTopLabel.setLocation(370,420);
+        humidityTopLabel.setOpaque(false);
+        humidityTopLabel.setForeground(Color.WHITE);
+        humidityTopLabel.setFont(font.deriveFont(Font.BOLD, 25f));
+        humidityTopLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        humidityTopLabel.setVerticalAlignment(SwingConstants.CENTER);
+        this.getContentPane().add(humidityTopLabel);
+
+        this.humidityValLabel = new JLabel("---");
+        humidityValLabel.setSize(340,30);
+        humidityValLabel.setLocation(370,450);
+        humidityValLabel.setOpaque(false);
+        humidityValLabel.setForeground(Color.WHITE);
+        humidityValLabel.setFont(font.deriveFont(25f));
+        humidityValLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        humidityValLabel.setVerticalAlignment(SwingConstants.CENTER);
+        this.getContentPane().add(humidityValLabel);
+    }
+
+    public void setTemperature(double kelvin) {
+        double celsius = kelvin-273.15;
+        this.temperatureLabel.setText(celsius+"°C");
+    }
+
+    public void setStatus(String status) {
+        this.statusLabel.setText(status);
+    }
+
+    public void setWindSpeed(int speedms) {
+        this.windSpeedValLabel.setText(speedms+" m/s");
+    }
+
+    public void setHumidity(int humidity) {
+        this.humidityValLabel.setText(humidity+"%");
     }
 
 }
