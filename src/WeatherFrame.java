@@ -69,19 +69,19 @@ public class WeatherFrame extends JFrame {
         sendButton.setContentAreaFilled(false);
         this.getContentPane().add(sendButton);
 
-        JLabel cityInfoLabel = new JLabel("Presov, SK");
-        cityInfoLabel.setSize(150,30);
-        cityInfoLabel.setLocation(295,195);
-        cityInfoLabel.setOpaque(false);
-        cityInfoLabel.setForeground(Color.WHITE);
-        cityInfoLabel.setFont(font.deriveFont(25f));
-        cityInfoLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        cityInfoLabel.setVerticalAlignment(SwingConstants.CENTER);
-        this.getContentPane().add(cityInfoLabel);
+        JLabel cityNameLabel = new JLabel("---");
+        cityNameLabel.setSize(150,30);
+        cityNameLabel.setLocation(295,200);
+        cityNameLabel.setOpaque(false);
+        cityNameLabel.setForeground(Color.WHITE);
+        cityNameLabel.setFont(font.deriveFont(25f));
+        cityNameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        cityNameLabel.setVerticalAlignment(SwingConstants.CENTER);
+        this.getContentPane().add(cityNameLabel);
 
-        JLabel temperatureLabel = new JLabel("20°C");
-        temperatureLabel.setSize(150,150);
-        temperatureLabel.setLocation(295,230);
+        JLabel temperatureLabel = new JLabel("---°C");
+        temperatureLabel.setSize(150,60);
+        temperatureLabel.setLocation(295,240);
         temperatureLabel.setOpaque(false);
         temperatureLabel.setForeground(Color.WHITE);
         temperatureLabel.setFont(font.deriveFont(48f));
@@ -103,9 +103,19 @@ public class WeatherFrame extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 temperatureLabel.setText(""+new Random().nextInt(30)+"°C");
-                cityInfoLabel.setText(cityField.getText()+", "+countryField.getText());
+                cityNameLabel.setText(cityField.getText()+", "+countryField.getText());
             }
         });
+
+        JLabel statusLabel = new JLabel("Snow");
+        statusLabel.setSize(150,30);
+        statusLabel.setLocation(295,310);
+        statusLabel.setOpaque(false);
+        statusLabel.setForeground(Color.WHITE);
+        statusLabel.setFont(font.deriveFont(25f));
+        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        statusLabel.setVerticalAlignment(SwingConstants.CENTER);
+        this.getContentPane().add(statusLabel);
     }
 
 }
