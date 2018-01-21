@@ -3,10 +3,11 @@ import sun.awt.SunHints;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.UndoableEditListener;
+import javax.swing.text.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.awt.event.*;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
@@ -131,6 +132,13 @@ public class WeatherFrame extends JFrame {
         countryField.setCaretColor(Color.WHITE);
         countryField.setSelectionColor(new Color(0,100,195));
         countryField.setSelectedTextColor(Color.WHITE);
+        countryField.setDocument(new PlainDocument(){
+            @Override
+            public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+                if (str == null) return;
+                if ((getLength() + str.length()) <= 2) super.insertString(offs, str, a);
+            }
+        });
         this.getContentPane().add(countryField);
 
         JButton sendButton = new JButton("Search");
@@ -237,7 +245,7 @@ public class WeatherFrame extends JFrame {
 
     public void setTemperature(double kelvin) {
         double celsius = kelvin-273.15;
-        this.temperatureLabel.setText(celsius+"°C");
+        this.temperatureLabel.setText((int)Math.floor(celsius+0.5)+"°C");
     }
 
     public void setStatus(String status) {
