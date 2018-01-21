@@ -204,7 +204,7 @@ public class WeatherFrame extends JFrame {
         windSpeedTopLabel.setVerticalAlignment(SwingConstants.CENTER);
         this.getContentPane().add(windSpeedTopLabel);
 
-        this.windSpeedValLabel = new JLabel("3.4 m/s");
+        this.windSpeedValLabel = new JLabel("---");
         windSpeedValLabel.setSize(340,30);
         windSpeedValLabel.setLocation(10,450);
         windSpeedValLabel.setOpaque(false);
@@ -224,7 +224,7 @@ public class WeatherFrame extends JFrame {
         humidityTopLabel.setVerticalAlignment(SwingConstants.CENTER);
         this.getContentPane().add(humidityTopLabel);
 
-        this.humidityValLabel = new JLabel("94%");
+        this.humidityValLabel = new JLabel("---");
         humidityValLabel.setSize(340,30);
         humidityValLabel.setLocation(370,450);
         humidityValLabel.setOpaque(false);
