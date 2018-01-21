@@ -3,8 +3,6 @@ import sun.awt.SunHints;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
-import javax.swing.event.DocumentListener;
-import javax.swing.event.UndoableEditListener;
 import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
