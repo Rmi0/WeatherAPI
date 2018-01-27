@@ -13,6 +13,7 @@ public class WeatherFrame extends JFrame {
 
     private Point mouse;
 
+    private JLabel cityNameLabel;
     private JLabel temperatureLabel;
     private JLabel statusLabel;
     private JLabel windSpeedValLabel;
@@ -120,7 +121,7 @@ public class WeatherFrame extends JFrame {
         countryLabel.setFont(font.deriveFont(20f));
         this.getContentPane().add(countryLabel);
 
-        JTextField countryField = new JTextField("SK");
+        JTextField countryField = new JTextField();
         countryField.setSize(150,40);
         countryField.setLocation(560,80);
         countryField.setOpaque(false);
@@ -137,6 +138,7 @@ public class WeatherFrame extends JFrame {
                 if ((getLength() + str.length()) <= 2) super.insertString(offs, str, a);
             }
         });
+        countryField.setText("SK");
         this.getContentPane().add(countryField);
 
         JButton sendButton = new JButton("Search");
@@ -150,7 +152,7 @@ public class WeatherFrame extends JFrame {
         sendButton.setContentAreaFilled(false);
         this.getContentPane().add(sendButton);
 
-        JLabel cityNameLabel = new JLabel("---");
+        this.cityNameLabel = new JLabel("---");
         cityNameLabel.setSize(700,30);
         cityNameLabel.setLocation(10,240);
         cityNameLabel.setOpaque(false);
@@ -239,6 +241,10 @@ public class WeatherFrame extends JFrame {
         humidityValLabel.setHorizontalAlignment(SwingConstants.CENTER);
         humidityValLabel.setVerticalAlignment(SwingConstants.CENTER);
         this.getContentPane().add(humidityValLabel);
+    }
+
+    public void setCityName(String cityName) {
+        this.cityNameLabel.setText(cityName);
     }
 
     public void setTemperature(double kelvin) {
