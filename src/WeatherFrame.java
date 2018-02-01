@@ -1,3 +1,5 @@
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import sun.awt.SunHints;
 
 import javax.imageio.ImageIO;
@@ -7,7 +9,8 @@ import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-import java.util.Random;
+
+
 
 public class WeatherFrame extends JFrame {
 
@@ -173,11 +176,13 @@ public class WeatherFrame extends JFrame {
         this.getContentPane().add(temperatureLabel);
 
         sendButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
                 sendButton.setForeground(Color.CYAN);
                 sendButton.setBorder(new MatteBorder(0,0,1,0,Color.CYAN));
             }
 
+            @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
                 sendButton.setForeground(Color.WHITE);
                 sendButton.setBorder(new MatteBorder(0,0,1,0,Color.WHITE));
@@ -185,8 +190,21 @@ public class WeatherFrame extends JFrame {
 
             @Override
             public void mouseClicked(MouseEvent e) {
-                temperatureLabel.setText(new Random().nextInt(30)+"°C");
-                cityNameLabel.setText(cityField.getText()+", "+countryField.getText());
+                try {
+                    String country = countryField.getText().length()==2?","+countryField.getText():"";
+                    String url = "http://api.openweathermap.org/data/2.5/weather?q="+cityField.getText()+country+
+                            "&appid=84b509b8771fd1e2aabb24e5af885bf9";
+                    String response;
+                    if ((response = new HTMLRequest(url).get()) != null) {
+                        JSONParser parser = new JSONParser();
+                        JSONObject obj = (JSONObject) parser.parse(response);
+
+                        JSONObject main = (JSONObject) obj.get("main");
+                        setTemperature((double)main.get("temp"));
+
+                        cityNameLabel.setText(cityField.getText() + ", " + countryField.getText());
+                    }
+                } catch (Exception ex) {ex.printStackTrace();}
             }
         });
 
