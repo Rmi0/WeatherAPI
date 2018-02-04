@@ -9,7 +9,9 @@ import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
-
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 
 public class WeatherFrame extends JFrame {
@@ -21,6 +23,8 @@ public class WeatherFrame extends JFrame {
     private JLabel statusLabel;
     private JLabel windSpeedValLabel;
     private JLabel humidityValLabel;
+    private JLabel sunriseValLabel;
+    private JLabel sunsetValLabel;
 
     public WeatherFrame() throws Exception {
         this.setTitle("Weather");
@@ -175,6 +179,7 @@ public class WeatherFrame extends JFrame {
         temperatureLabel.setVerticalAlignment(SwingConstants.CENTER);
         this.getContentPane().add(temperatureLabel);
 
+        APIRequest request = new APIRequest(null, this);
         sendButton.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
@@ -194,16 +199,8 @@ public class WeatherFrame extends JFrame {
                     String country = countryField.getText().length()==2?","+countryField.getText():"";
                     String url = "http://api.openweathermap.org/data/2.5/weather?q="+cityField.getText()+country+
                             "&appid=84b509b8771fd1e2aabb24e5af885bf9";
-                    String response;
-                    if ((response = new HTMLRequest(url).get()) != null) {
-                        JSONParser parser = new JSONParser();
-                        JSONObject obj = (JSONObject) parser.parse(response);
-
-                        JSONObject main = (JSONObject) obj.get("main");
-                        setTemperature((double)main.get("temp"));
-
-                        cityNameLabel.setText(cityField.getText() + ", " + countryField.getText());
-                    }
+                    request.setHtmlRequest(new HTMLRequest(url));
+                    request.update();
                 } catch (Exception ex) {ex.printStackTrace();}
             }
         });
@@ -259,6 +256,46 @@ public class WeatherFrame extends JFrame {
         humidityValLabel.setHorizontalAlignment(SwingConstants.CENTER);
         humidityValLabel.setVerticalAlignment(SwingConstants.CENTER);
         this.getContentPane().add(humidityValLabel);
+
+        JLabel sunriseTopLabel = new JLabel("Sunrise");
+        sunriseTopLabel.setSize(340,30);
+        sunriseTopLabel.setLocation(10,570);
+        sunriseTopLabel.setOpaque(false);
+        sunriseTopLabel.setForeground(Color.WHITE);
+        sunriseTopLabel.setFont(font.deriveFont(25f));
+        sunriseTopLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        sunriseTopLabel.setVerticalAlignment(SwingConstants.CENTER);
+        this.getContentPane().add(sunriseTopLabel);
+
+        this.sunriseValLabel = new JLabel("---");
+        sunriseValLabel.setSize(340,30);
+        sunriseValLabel.setLocation(10,600);
+        sunriseValLabel.setOpaque(false);
+        sunriseValLabel.setForeground(Color.WHITE);
+        sunriseValLabel.setFont(font.deriveFont(20f));
+        sunriseValLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        sunriseValLabel.setVerticalAlignment(SwingConstants.CENTER);
+        this.getContentPane().add(sunriseValLabel);
+
+        JLabel sunsetTopLabel = new JLabel("Sunset");
+        sunsetTopLabel.setSize(340,30);
+        sunsetTopLabel.setLocation(370,570);
+        sunsetTopLabel.setOpaque(false);
+        sunsetTopLabel.setForeground(Color.WHITE);
+        sunsetTopLabel.setFont(font.deriveFont(25f));
+        sunsetTopLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        sunsetTopLabel.setVerticalAlignment(SwingConstants.CENTER);
+        this.getContentPane().add(sunsetTopLabel);
+
+        this.sunsetValLabel = new JLabel("---");
+        sunsetValLabel.setSize(340,30);
+        sunsetValLabel.setLocation(370,600);
+        sunsetValLabel.setOpaque(false);
+        sunsetValLabel.setForeground(Color.WHITE);
+        sunsetValLabel.setFont(font.deriveFont(20f));
+        sunsetValLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        sunsetValLabel.setVerticalAlignment(SwingConstants.CENTER);
+        this.getContentPane().add(sunsetValLabel);
     }
 
     public void setCityName(String cityName) {
@@ -278,8 +315,16 @@ public class WeatherFrame extends JFrame {
         this.windSpeedValLabel.setText(speedms+" m/s");
     }
 
-    public void setHumidity(int humidity) {
+    public void setHumidity(long humidity) {
         this.humidityValLabel.setText(humidity+"%");
+    }
+
+    public void setSunrise(long s) {
+        this.sunriseValLabel.setText(new SimpleDateFormat("HH:mm").format(new Date(s*1000)));
+    }
+
+    public void setSunset(long s) {
+        this.sunsetValLabel.setText(new SimpleDateFormat("HH:mm").format(new Date(s*1000)));
     }
 
 }
