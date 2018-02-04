@@ -32,7 +32,8 @@ public class APIRequest {
 
         //WIND
         JSONObject wind = (JSONObject) tree.get("wind");
-        frame.setWindSpeed((double)wind.get("speed"));
+        String speed = String.valueOf(wind.get("speed"));
+        frame.setWindSpeed(Double.parseDouble(speed));
 
         //SYS
         JSONObject sys = (JSONObject) tree.get("sys");
