@@ -25,6 +25,9 @@ public class WeatherFrame extends JFrame {
     private JLabel humidityValLabel;
     private JLabel sunriseValLabel;
     private JLabel sunsetValLabel;
+    private JLabel notificationLabel;
+    private Timer t;
+    private int count;
 
     public WeatherFrame() throws Exception {
         this.setTitle("Weather");
@@ -296,6 +299,16 @@ public class WeatherFrame extends JFrame {
         sunsetValLabel.setHorizontalAlignment(SwingConstants.CENTER);
         sunsetValLabel.setVerticalAlignment(SwingConstants.CENTER);
         this.getContentPane().add(sunsetValLabel);
+
+        this.notificationLabel = new JLabel();
+        notificationLabel.setSize(720,40);
+        notificationLabel.setLocation(0,680);
+        notificationLabel.setOpaque(false);
+        this.getContentPane().add(notificationLabel);
+
+        this.count = 0;
+        this.t = null;
+
     }
 
     public void setCityName(String cityName) {
@@ -325,6 +338,28 @@ public class WeatherFrame extends JFrame {
 
     public void setSunset(long s) {
         this.sunsetValLabel.setText(new SimpleDateFormat("HH:mm").format(new Date(s*1000)));
+    }
+
+    public void sendNotification(Image img) {
+        this.notificationLabel.setIcon(new ImageIcon(img));
+        if (t != null) t.stop();
+        this.count = 0;
+        this.t = new Timer(15, e ->{
+            count++;
+            float alpha = 1-count*0.005f;
+            if (alpha <= 0) {
+                this.t.stop();
+                this.count = 0;
+                this.notificationLabel.setIcon(null);
+                return;
+            }
+            BufferedImage newImg = new BufferedImage(720,40,BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = (Graphics2D) newImg.getGraphics();
+            g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, alpha));
+            g2d.drawImage(img, 0,0, null);
+            this.notificationLabel.setIcon(new ImageIcon(newImg));
+        });
+        this.t.start();
     }
 
 }

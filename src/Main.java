@@ -1,3 +1,4 @@
+
 import javax.swing.*;
 
 public class Main {
@@ -6,6 +7,7 @@ public class Main {
         System.setProperty("awt.useSystemAAFontSettings","on");
         System.setProperty("swing.aatext", "true");
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+
         new WeatherFrame().setVisible(true);
     }
 

@@ -24,7 +24,7 @@ public class HTMLRequest {
         int responseCode = con.getResponseCode();
         if (responseCode != 200) {
             System.err.println("ERROR: code "+responseCode);
-            return null;
+            return "ERROR_"+responseCode;
         }
 
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));

@@ -1,6 +1,7 @@
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import java.awt.*;
 
 public class APIRequest {
 
@@ -15,7 +16,10 @@ public class APIRequest {
     public void update() throws Exception {
         String response = htmlRequest.get();
         if (response == null) {
-            System.err.println("ERROR: response = null");
+            frame.sendNotification(Notification.create("Unknown error", Color.WHITE, Color.RED));
+            return;
+        } else if (response.startsWith("ERROR_")) {
+            frame.sendNotification(Notification.create("Error "+response.split("_")[1], Color.WHITE, Color.RED));
             return;
         }
         JSONParser parser = new JSONParser();
